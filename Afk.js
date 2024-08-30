@@ -1,28 +1,27 @@
-const { createClient } = require('bedrock-protocol');
+const { Client } = require('@minecraft-js/bedrock-client');
 
-const options = {
-  host: 'minecraft.kazaknodes.online', // Замените на адрес вашего сервера
-  port: 19132, // Замените на порт вашего сервера
-  username: 'AFKBot', // Имя бота
-  offline: false // Если сервер не требует аутентификации Xbox Live, установите true
-};
-
-const client = createClient(options);
-
-client.on('loggedIn', () => {
-  console.log('Бот успешно подключился к серверу!');
+// Настройки подключения
+const client = new Client({
+  host: 'minecraft.kazaknodes.online', // IP сервера
+  port: 19132, // Порт сервера Bedrock Edition по умолчанию
+  version: '1.20.0.01', // Версия клиента
+  username: 'AFKBot', // Имя игрока-бота
+  offline: false, // Режим онлайн
 });
 
-client.on('disconnect', (packet) => {
-  console.log('Бот был отключен:', packet);
+// Подключение к серверу
+client.connect();
+
+client.on('connect', () => {
+  console.log('Бот подключился к серверу!');
 });
 
-client.on('error', (error) => {
-  console.log('Произошла ошибка:', error);
+client.on('disconnect', (reason) => {
+  console.log('Бот отключен: ', reason);
 });
 
-// Пример команды чтобы бот прыгал каждые 10 секунд
-setInterval(() => {
-  client.queue('player_action', { action: 'jump' });
-  console.log('Бот совершил прыжок');
-}, 10000);
+client.on('error', (err) => {
+  console.log('Произошла ошибка: ', err);
+});
+
+// AFK-бот: ничего не делаем, чтобы оставаться AFK
